@@ -42,6 +42,7 @@ class Settings(BaseSettings):
     GEMINI_MODEL: str = "gemini-1.5-flash"
 
     # ── Internal Services ────────────────────────────────
+    FARMER_SERVICE_URL: str = "http://localhost:8002"
     PRICE_SERVICE_URL: str = "http://localhost:8006"
     NOTIFICATION_SERVICE_URL: str = "http://localhost:8007"
 
@@ -59,6 +60,7 @@ class Settings(BaseSettings):
     ENABLE_BANK_VERIFICATION: bool = False
     ENABLE_REAL_PRICE_DATA: bool = False
     ENABLE_NOTIFICATIONS: bool = False
+    ENABLE_FARMER_SERVICE: bool = False
 
     # ── Phase 1 Scope ────────────────────────────────────
     PHASE1_CROPS: str = "tomato,chilli_dry,chilli_green,groundnut"
