@@ -16,7 +16,7 @@ class EventBusClient:
     async def emit_event(self, event_type: str, payload: dict) -> None:
         message = json.dumps({"event": event_type, "payload": payload})
 
-        if not settings.REDIS_URL or settings.ENV == "test":
+        if not settings.REDIS_URL or settings.ENV in ("test", "development"):
             logger.info("MOCK event: %s -> %s", event_type, message)
             return
 

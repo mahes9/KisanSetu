@@ -89,7 +89,8 @@ class ListingPhoto(TimestampMixin, Base):
     )
 
     # ── Relationships ────────────────────────────────────────────────
-    draft = relationship("ListingDraft", backref="photos", lazy="selectin")
+    draft = relationship("ListingDraft", lazy="selectin")
+    listing = relationship("Listing", back_populates="photos", lazy="selectin")
 
     def __repr__(self) -> str:
         return (
