@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import random
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from uuid import UUID
 
 from sqlalchemy import func, select, update
@@ -36,6 +36,7 @@ class ListingRepository:
             listing_number=listing_number,
             source_draft_id=draft.id,
             crop=step1.get("crop", ""),
+            variety=step2.get("variety"),
             quantity_kg=step1.get("quantity_kg", 0),
             harvest_status=step1.get("harvest_status"),
             days_since_harvest=step1.get("days_since_harvest"),
@@ -48,7 +49,7 @@ class ListingRepository:
             modal_price_at_publish=locked_modal,
             transport_type=step4.get("transport_type"),
             pickup_window=step4.get("pickup_window"),
-            pickup_date=step4.get("pickup_date"),
+            pickup_date=date.fromisoformat(step4["pickup_date"]) if step4.get("pickup_date") else None,
             pickup_address=step4.get("pickup_address"),
             status="active",
             expires_at=now + timedelta(days=ListingConfig.LISTING_DURATION_DAYS),

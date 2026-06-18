@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "buyer-service"
+version = "0.1.0"
+description = "KisanGPT Marketplace Buyer Service"
+authors = ["KisanGPT Team"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115.0"
+uvicorn = {extras = ["standard"], version = "^0.34.0"}
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.0"}
+asyncpg = "^0.30.0"
+pydantic = "^2.0.0"
+pydantic-settings = "^2.0.0"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+httpx = "^0.28.0"
+redis = "^5.0.0"
+alembic = "^1.14.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+pytest-asyncio = "^0.24.0"
+pytest-cov = "^6.0.0"
+httpx = "^0.28.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

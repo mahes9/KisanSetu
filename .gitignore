@@ -1,0 +1,14 @@
+# data caches (regenerated on run)
+data/
+journal/
+
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# secrets
+.mcp.json

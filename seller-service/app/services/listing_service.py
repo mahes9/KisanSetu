@@ -187,6 +187,7 @@ class ListingService:
         return {
             "listing_number": listing.listing_number,
             "crop": listing.crop,
+            "variety": listing.variety,
             "quantity_kg": listing.quantity_kg,
             "grade": listing.grade,
             "ask_price_per_q": listing.ask_price_per_q,
@@ -235,6 +236,7 @@ class ListingService:
             "seller_id": str(listing.seller_id),
             "listing_number": listing.listing_number,
             "crop": listing.crop,
+            "variety": listing.variety,
             "quantity_kg": listing.quantity_kg,
             "harvest_status": listing.harvest_status,
             "grade": listing.grade,

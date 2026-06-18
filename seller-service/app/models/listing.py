@@ -21,6 +21,7 @@ class Listing(TimestampMixin, Base):
     source_draft_id: Mapped[uuid.UUID | None] = mapped_column(PG_UUID(as_uuid=True), ForeignKey("listing_drafts.id"), nullable=True)
 
     crop: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
+    variety: Mapped[str | None] = mapped_column(String(50), nullable=True)
     quantity_kg: Mapped[float] = mapped_column(Float, nullable=False)
     harvest_status: Mapped[str | None] = mapped_column(String(30), nullable=True)
     days_since_harvest: Mapped[int | None] = mapped_column(Integer, nullable=True)
