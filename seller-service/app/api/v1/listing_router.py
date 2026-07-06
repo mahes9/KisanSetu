@@ -37,6 +37,21 @@ async def list_my_listings(
     return await ListingController.list_my_listings(seller, db, page, per_page, status)
 
 
+@router.get("/listings/public", summary="Browse all active listings (no auth)")
+async def browse_public_listings(
+    crop: str | None = Query(None),
+    district: str | None = Query(None),
+    min_qty: float | None = Query(None),
+    max_price: float | None = Query(None),
+    page: int = Query(1, ge=1),
+    per_page: int = Query(20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+):
+    return await ListingController.browse_public_listings(
+        db, crop, district, min_qty, max_price, page, per_page
+    )
+
+
 @router.get("/listings/{listing_id}", summary="Get listing detail")
 async def get_listing(
     listing_id: UUID,

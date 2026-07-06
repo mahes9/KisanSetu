@@ -9,6 +9,8 @@ from app.models.listing_photo import ListingPhoto
 from app.models.ai_grading_log import AIGradingLog
 from app.models.price_snapshot import PriceSnapshot
 from app.models.season_summary import SeasonSummary
+from app.models.enquiry import Enquiry
+from app.models.order import Order
 
 __all__ = [
     "Base",
@@ -21,4 +23,6 @@ __all__ = [
     "AIGradingLog",
     "PriceSnapshot",
     "SeasonSummary",
+    "Enquiry",
+    "Order",
 ]

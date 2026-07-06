@@ -100,6 +100,29 @@ tr:hover { background: #fafafa; }
 .listing-card .price { font-size: 20px; font-weight: 700; color: var(--green); }
 .listing-card .meta { font-size: 12px; color: var(--gray); margin-top: 8px; }
 
+/* Modal */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--card); border-radius:var(--radius); padding:24px; width:520px; max-width:95vw; max-height:90vh; overflow-y:auto; box-shadow:0 8px 32px rgba(0,0,0,0.3); }
+.modal h3 { margin-bottom:16px; color:var(--green); }
+.modal .close-btn { float:right; background:none; border:none; font-size:20px; cursor:pointer; color:var(--gray); }
+
+/* Enquiry status badges */
+.badge-pending { background:#fff3e0; color:#ef6c00; }
+.badge-viewed { background:#e3f2fd; color:#1565c0; }
+.badge-responded { background:#e8f5e9; color:#2e7d32; }
+.badge-negotiating { background:#fce4ec; color:#c62828; }
+.badge-accepted { background:#e8f5e9; color:#1b5e20; font-weight:700; }
+.badge-rejected { background:#ffebee; color:#b71c1c; }
+.badge-withdrawn { background:#f5f5f5; color:#616161; }
+.badge-expired { background:#f5f5f5; color:#9e9e9e; }
+
+/* Enquiry cards */
+.enquiry-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; }
+.enquiry-card .eq-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.enquiry-card .eq-detail { font-size:13px; color:var(--gray); line-height:1.6; }
+.enquiry-card .eq-actions { margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
+
 /* Notification */
 .toast { position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: var(--radius); color: #fff; font-size: 14px; z-index: 1000; animation: slideIn 0.3s ease; }
 @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
@@ -112,8 +135,10 @@ tr:hover { background: #fafafa; }
   <nav class="sidebar">
     <h2>🌾 KisanSetu</h2>
     <div class="section-label">Seller (8001)</div>
-    <button onclick="showPanel('seller-draft')" id="nav-seller-draft">Create Draft & Publish</button>
+    <button onclick="showPanel('seller-draft'); $('my-drafts-card').style.display='block'; $('wizard-area').style.display='none'; loadMyDrafts();" id="nav-seller-draft">Create Draft & Publish</button>
     <button onclick="showPanel('seller-listings')" id="nav-seller-listings">My Listings</button>
+    <button onclick="showPanel('seller-enquiries'); loadSellerEnquiries();" id="nav-seller-enquiries">Enquiries</button>
+    <button onclick="showPanel('seller-orders'); loadSellerOrders();" id="nav-seller-orders">Orders</button>
     <button onclick="showPanel('seller-analytics')" id="nav-seller-analytics">Analytics</button>
     <div class="section-label">Buyer (8002)</div>
     <button onclick="showPanel('buyer-register')" id="nav-buyer-register">Register</button>
@@ -122,9 +147,13 @@ tr:hover { background: #fafafa; }
     <button onclick="showPanel('buyer-kyc')" id="nav-buyer-kyc">KYC Verify</button>
     <button onclick="showPanel('buyer-locations')" id="nav-buyer-locations">Locations</button>
     <button onclick="showPanel('buyer-browse')" id="nav-buyer-browse">Browse Listings</button>
+    <button onclick="showPanel('buyer-enquiries'); loadBuyerEnquiries();" id="nav-buyer-enquiries">My Enquiries</button>
     <button onclick="showPanel('buyer-requirements')" id="nav-buyer-requirements">Requirements (RFQ)</button>
     <button onclick="showPanel('buyer-offers')" id="nav-buyer-offers">Offers</button>
+    <button onclick="showPanel('buyer-orders'); loadBuyerOrders();" id="nav-buyer-orders">My Orders</button>
     <button onclick="showPanel('buyer-analytics')" id="nav-buyer-analytics">Analytics</button>
+    <div class="section-label">Platform</div>
+    <button onclick="showPanel('platform-revenue'); loadPlatformRevenue();" id="nav-platform-revenue">Revenue</button>
     <div class="section-label">System</div>
     <button onclick="showPanel('logs')" id="nav-logs">API Logs</button>
   </nav>
@@ -145,11 +174,21 @@ tr:hover { background: #fafafa; }
     <!-- ═══════ SELLER: CREATE DRAFT & PUBLISH ═══════ -->
     <div class="panel" id="panel-seller-draft">
       <h2 style="margin-bottom:16px;">Seller: Create Draft & Publish</h2>
+
+      <!-- My Drafts -->
+      <div class="card" id="my-drafts-card">
+        <h3>My Drafts</h3>
+        <div id="my-drafts-list" style="margin-bottom:12px;"><p style="color:var(--gray); font-size:13px;">Loading drafts...</p></div>
+        <button class="btn btn-green btn-sm" onclick="goToStep(1); currentDraftId=null; $('my-drafts-card').style.display='none'; $('wizard-area').style.display='block';">+ New Draft</button>
+      </div>
+
+      <div id="wizard-area" style="display:none;">
+      <div style="margin-bottom:12px;"><button class="btn btn-sm" style="background:#90a4ae;color:#fff;" onclick="$('wizard-area').style.display='none'; $('my-drafts-card').style.display='block'; loadMyDrafts();">← Back to My Drafts</button></div>
       <div class="stepper">
         <div class="step-item active" id="wizard-step-1" onclick="goToStep(1)">1. Crop Info</div>
         <div class="step-item" id="wizard-step-2" onclick="goToStep(2)">2. Quality</div>
-        <div class="step-item" id="wizard-step-3" onclick="goToStep(3)">3. Logistics</div>
-        <div class="step-item" id="wizard-step-4" onclick="goToStep(4)">4. Pricing</div>
+        <div class="step-item" id="wizard-step-3" onclick="goToStep(3)">3. Pricing</div>
+        <div class="step-item" id="wizard-step-4" onclick="goToStep(4)">4. Logistics</div>
         <div class="step-item" id="wizard-step-5" onclick="goToStep(5)">5. Publish</div>
       </div>
 
@@ -229,13 +268,42 @@ tr:hover { background: #fafafa; }
       <!-- Step 3: Pricing -->
       <div class="card wizard-page" id="wizard-page-3" style="display:none">
         <h3>Step 3 — Pricing</h3>
+        <div style="padding:12px; background:var(--blue-light); border-radius:4px; margin-bottom:16px; font-size:13px;">
+          <strong>Market Reference:</strong> Floor price: ₹1,054/q · Modal price: ₹1,240/q (mock values for dev)
+        </div>
         <div class="form-group">
           <label>Ask Price per Quintal (₹) *</label>
           <input type="number" id="s-ask-price-step3" value="2200">
         </div>
-        <p style="font-size:12px; color:var(--gray); margin-bottom:12px;">
-          Floor price: ₹1,054 · Modal price: ₹1,240 (mock values for dev)
-        </p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Payment Terms</label>
+            <select id="s-payment-terms">
+              <option value="advance">Advance Payment</option>
+              <option value="on_delivery">On Delivery</option>
+              <option value="credit_7">7-day Credit</option>
+              <option value="credit_15">15-day Credit</option>
+              <option value="credit_30">30-day Credit</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Price Validity (days)</label>
+            <select id="s-price-validity">
+              <option value="3">3 days</option>
+              <option value="5">5 days</option>
+              <option value="7" selected>7 days</option>
+              <option value="14">14 days</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Negotiable?</label>
+          <select id="s-negotiable">
+            <option value="yes">Yes — Open to negotiation</option>
+            <option value="limited">Limited — Up to 10% below ask</option>
+            <option value="no">No — Fixed price only</option>
+          </select>
+        </div>
         <button class="btn btn-green" onclick="saveStep(3)">Save & Next →</button>
       </div>
 
@@ -293,13 +361,23 @@ tr:hover { background: #fafafa; }
         <h3>Current Draft</h3>
         <pre id="current-draft" style="font-size:12px; max-height:200px; overflow:auto;">No draft created yet.</pre>
       </div>
+      </div><!-- close wizard-area -->
     </div>
 
     <!-- ═══════ SELLER: MY LISTINGS ═══════ -->
     <div class="panel" id="panel-seller-listings">
       <h2 style="margin-bottom:16px;">Seller: My Listings</h2>
-      <button class="btn btn-green btn-sm" onclick="loadSellerListings()" style="margin-bottom:12px;">Refresh</button>
-      <div id="seller-listings-table"></div>
+      <button class="btn btn-green btn-sm" onclick="loadSellerListings()" style="margin-bottom:16px;">Refresh</button>
+
+      <div class="card">
+        <h3>Active Listings</h3>
+        <div id="seller-active-listings"><p style="color:var(--gray); font-size:13px;">Click Refresh to load.</p></div>
+      </div>
+
+      <div class="card">
+        <h3>Past Sales & Closed Listings</h3>
+        <div id="seller-past-listings"><p style="color:var(--gray); font-size:13px;">Click Refresh to load.</p></div>
+      </div>
     </div>
 
     <!-- ═══════ SELLER: ANALYTICS ═══════ -->
@@ -581,6 +659,118 @@ tr:hover { background: #fafafa; }
       <div class="card"><pre id="buyer-analytics-result" style="font-size:12px; max-height:400px; overflow:auto;">Click a button above.</pre></div>
     </div>
 
+    <!-- ═══════ SELLER: ENQUIRIES ═══════ -->
+    <div class="panel" id="panel-seller-enquiries">
+      <h2 style="margin-bottom:16px;">Seller: Incoming Enquiries</h2>
+      <div style="margin-bottom:12px; display:flex; gap:8px; align-items:center;">
+        <select id="eq-filter-status" style="padding:6px 10px; border:1px solid var(--border); border-radius:4px;">
+          <option value="">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="viewed">Viewed</option>
+          <option value="responded">Responded</option>
+          <option value="negotiating">Negotiating</option>
+          <option value="accepted">Accepted</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <button class="btn btn-green btn-sm" onclick="loadSellerEnquiries()">Refresh</button>
+      </div>
+      <div id="seller-enquiries-list"></div>
+
+      <div class="card" style="margin-top:16px;">
+        <h3>Respond to Enquiry</h3>
+        <div class="form-group"><label>Enquiry ID</label><input id="resp-enquiry-id" placeholder="Click 'Select' on an enquiry above"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Your Quoted Price (₹/quintal) *</label><input type="number" id="resp-price" placeholder="2200"></div>
+          <div class="form-group"><label>Available Quantity (kg)</label><input type="number" id="resp-qty" placeholder="1000"></div>
+          <div class="form-group"><label>Delivery Within (days)</label><input type="number" id="resp-days" placeholder="3"></div>
+        </div>
+        <div class="form-group"><label>Message</label><input id="resp-message" placeholder="e.g. Fresh stock, ready for pickup"></div>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button class="btn btn-green btn-sm" onclick="sellerRespondEnquiry()">Send Quote</button>
+          <button class="btn btn-green btn-sm" onclick="sellerAcceptEnquiry()">Accept Directly</button>
+          <button class="btn btn-red btn-sm" onclick="sellerRejectEnquiry()">Reject</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ BUYER: MY ENQUIRIES ═══════ -->
+    <div class="panel" id="panel-buyer-enquiries">
+      <h2 style="margin-bottom:16px;">Buyer: My Sent Enquiries</h2>
+      <button class="btn btn-blue btn-sm" onclick="loadBuyerEnquiries()" style="margin-bottom:12px;">Refresh</button>
+      <div id="buyer-enquiries-list"></div>
+
+      <div class="card" style="margin-top:16px;">
+        <h3>Counter Offer</h3>
+        <div class="form-group"><label>Enquiry ID</label><input id="counter-eq-id" placeholder="Click 'Select' on an enquiry above"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Your Counter Price (₹/quintal) *</label><input type="number" id="counter-eq-price" placeholder="2000"></div>
+          <div class="form-group"><label>Quantity (kg)</label><input type="number" id="counter-eq-qty" placeholder="500"></div>
+        </div>
+        <div class="form-group"><label>Message</label><input id="counter-eq-message" placeholder="e.g. Can you do this price for bulk?"></div>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button class="btn btn-orange btn-sm" onclick="buyerCounterEnquiry()">Send Counter</button>
+          <button class="btn btn-red btn-sm" onclick="buyerWithdrawEnquiry()">Withdraw</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ SELLER: ORDERS ═══════ -->
+    <div class="panel" id="panel-seller-orders">
+      <h2 style="margin-bottom:4px;">Seller: My Orders</h2>
+      <p style="font-size:12px; color:var(--gray); margin-bottom:12px;">Escrow-protected orders. Payment released only after buyer confirms delivery with OTP.</p>
+      <button class="btn btn-green btn-sm" onclick="loadSellerOrders()" style="margin-bottom:12px;">Refresh</button>
+      <div id="seller-orders-list"></div>
+    </div>
+
+    <!-- ═══════ BUYER: ORDERS ═══════ -->
+    <div class="panel" id="panel-buyer-orders">
+      <h2 style="margin-bottom:4px;">Buyer: My Orders</h2>
+      <p style="font-size:12px; color:var(--gray); margin-bottom:12px;">Pay into escrow → Get OTP → Share OTP at delivery → Payment released. Raise disputes if issues.</p>
+      <button class="btn btn-blue btn-sm" onclick="loadBuyerOrders()" style="margin-bottom:12px;">Refresh</button>
+      <div id="buyer-orders-list"></div>
+    </div>
+
+    <!-- ═══════ PLATFORM: REVENUE ═══════ -->
+    <div class="panel" id="panel-platform-revenue">
+      <h2 style="margin-bottom:4px;">Platform Revenue Dashboard</h2>
+      <p style="font-size:12px; color:var(--gray); margin-bottom:12px;">Commission earned from escrow-protected transactions.</p>
+      <button class="btn btn-green btn-sm" onclick="loadPlatformRevenue()" style="margin-bottom:12px;">Refresh</button>
+      <div id="revenue-dashboard"></div>
+    </div>
+
+    <!-- ═══════ ENQUIRY MODAL ═══════ -->
+    <div class="modal-overlay" id="enquiry-modal">
+      <div class="modal">
+        <button class="close-btn" onclick="closeEnquiryModal()">✕</button>
+        <h3>Send Enquiry</h3>
+        <p style="font-size:13px; color:var(--gray); margin-bottom:16px;" id="eq-modal-listing-info"></p>
+        <input type="hidden" id="eq-listing-id">
+        <div class="form-row">
+          <div class="form-group"><label>Quantity Needed (kg) *</label><input type="number" id="eq-qty" placeholder="500"></div>
+          <div class="form-group"><label>Your Offered Price (₹/quintal)</label><input type="number" id="eq-price" placeholder="2100"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Payment Mode</label>
+            <select id="eq-payment">
+              <option value="">Select</option>
+              <option value="cash">Cash</option>
+              <option value="upi">UPI</option>
+              <option value="bank_transfer">Bank Transfer</option>
+              <option value="credit">Credit (7-15 days)</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Delivery Pincode</label><input id="eq-pincode" placeholder="520001"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Delivery District</label><input id="eq-district" placeholder="Krishna"></div>
+          <div class="form-group"><label>Required By</label><input type="date" id="eq-required-by"></div>
+        </div>
+        <div class="form-group"><label>Message to Seller</label><textarea id="eq-message" placeholder="e.g. Need Grade A quality, can pick up from your location" maxlength="500" rows="3"></textarea></div>
+        <button class="btn btn-green" onclick="submitEnquiry()" style="width:100%; margin-top:8px;">Send Enquiry</button>
+      </div>
+    </div>
+
     <!-- ═══════ API LOGS ═══════ -->
     <div class="panel" id="panel-logs">
       <h2 style="margin-bottom:16px;">API Request/Response Log</h2>
@@ -671,6 +861,102 @@ async function api(base, method, path, body = null, authType = null) {
   });
 });
 
+// ── My Drafts: load & resume ──
+async function loadMyDrafts() {
+  const res = await api(SELLER, 'GET', '/drafts', null, 'seller');
+  if (!res.ok) { $('my-drafts-list').innerHTML = '<p>Failed to load drafts.</p>'; return; }
+  const drafts = res.data.data?.drafts || [];
+  if (drafts.length === 0) {
+    $('my-drafts-list').innerHTML = '<p style="color:var(--gray); font-size:13px;">No drafts yet. Click "+ New Draft" to start.</p>';
+    return;
+  }
+  let html = '<table><tr><th>Crop</th><th>Qty</th><th>Step</th><th>Progress</th><th>Status</th><th>Last Updated</th><th>Actions</th></tr>';
+  drafts.forEach(d => {
+    const crop = d.step1_data?.crop || '—';
+    const qty = d.step1_data?.quantity_kg || '—';
+    const pct = d.completeness_score || 0;
+    const barColor = pct === 100 ? 'var(--green)' : pct >= 50 ? 'var(--orange)' : 'var(--red)';
+    const updated = d.updated_at ? new Date(d.updated_at).toLocaleString() : '—';
+    html += `<tr>
+      <td><strong>${crop}</strong></td>
+      <td>${qty} kg</td>
+      <td>Step ${d.current_step}/5</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div style="flex:1;height:8px;background:#eee;border-radius:4px;overflow:hidden;">
+            <div style="width:${pct}%;height:100%;background:${barColor};border-radius:4px;"></div>
+          </div>
+          <span style="font-size:11px;">${pct}%</span>
+        </div>
+      </td>
+      <td><span class="badge badge-${d.draft_status==='published'?'green':d.draft_status==='complete'?'blue':'orange'}">${d.draft_status}</span></td>
+      <td style="font-size:11px;">${updated}</td>
+      <td>
+        ${d.draft_status !== 'published' ? `<button class="btn btn-green btn-sm" onclick="resumeDraft('${d.id}', ${d.current_step})">Resume</button>` : ''}
+        <button class="btn btn-red btn-sm" onclick="deleteDraft('${d.id}')">Delete</button>
+      </td>
+    </tr>`;
+  });
+  html += '</table>';
+  $('my-drafts-list').innerHTML = html;
+}
+
+async function resumeDraft(draftId, step) {
+  currentDraftId = draftId;
+  const res = await api(SELLER, 'GET', `/drafts/${draftId}`, null, 'seller');
+  if (!res.ok) return;
+  const draft = res.data.data;
+
+  // Pre-fill step 1
+  if (draft.step1_data) {
+    $('s-crop').value = draft.step1_data.crop || 'Paddy';
+    $('s-qty').value = draft.step1_data.quantity_kg || 1000;
+    $('s-harvest-status').value = draft.step1_data.harvest_status || 'harvested';
+    $('s-days-harvest').value = draft.step1_data.days_since_harvest || 0;
+    updateVarietyOptions();
+  }
+  // Pre-fill step 2
+  if (draft.step2_data) {
+    if (draft.step2_data.variety) $('s-variety').value = draft.step2_data.variety;
+    if (draft.step2_data.moisture_pct != null) $('s-moisture').value = draft.step2_data.moisture_pct;
+    if (draft.step2_data.foreign_matter_pct != null) $('s-foreign').value = draft.step2_data.foreign_matter_pct;
+    if (draft.step2_data.grade) $('s-grade').value = draft.step2_data.grade;
+    if (draft.step2_data.photo_urls) $('s-photos').value = draft.step2_data.photo_urls.join(', ');
+  }
+  // Pre-fill step 3
+  if (draft.step3_data) {
+    if (draft.step3_data.ask_price_per_q) $('s-ask-price-step3').value = draft.step3_data.ask_price_per_q;
+    if (draft.step3_data.payment_terms) $('s-payment-terms').value = draft.step3_data.payment_terms;
+    if (draft.step3_data.price_validity_days) $('s-price-validity').value = draft.step3_data.price_validity_days;
+    if (draft.step3_data.negotiable) $('s-negotiable').value = draft.step3_data.negotiable;
+  }
+  // Pre-fill step 4
+  if (draft.step4_data) {
+    if (draft.step4_data.pickup_date) $('s-pickup-date').value = draft.step4_data.pickup_date;
+    if (draft.step4_data.transport_type) $('s-transport').value = draft.step4_data.transport_type;
+    if (draft.step4_data.pickup_address) {
+      const parts = draft.step4_data.pickup_address.split(', ');
+      if (parts[0]) $('s-village').value = parts[0];
+      if (parts[1]) $('s-district').value = parts[1];
+    }
+  }
+
+  $('current-draft').textContent = JSON.stringify(draft, null, 2);
+  $('my-drafts-card').style.display = 'none';
+  $('wizard-area').style.display = 'block';
+
+  // Go to the next incomplete step
+  const nextStep = Math.min(step + 1, 5);
+  goToStep(draft.draft_status === 'complete' ? 5 : (step >= 5 ? 5 : nextStep));
+  toast(`Resumed draft: ${draft.step1_data?.crop || 'Draft'} — Step ${step}`);
+}
+
+async function deleteDraft(draftId) {
+  if (!confirm('Delete this draft?')) return;
+  const res = await api(SELLER, 'DELETE', `/drafts/${draftId}`, null, 'seller');
+  if (res.ok) { toast('Draft deleted'); loadMyDrafts(); }
+}
+
 // ── Crop varieties & defaults ──
 const CROP_DATA = {
   Paddy:     { varieties: ['Sona Masuri', 'BPT 5204', 'IR 64', 'Basmati', 'Swarna', 'HMT'], moisture: 14, foreign: 1.5, grain: 3500 },
@@ -740,6 +1026,9 @@ async function saveStep(n) {
   } else if (n === 3) {
     stepData = {
       ask_price_per_q: Number(v('s-ask-price-step3')),
+      payment_terms: v('s-payment-terms'),
+      price_validity_days: Number(v('s-price-validity')),
+      negotiable: v('s-negotiable'),
       price_fetched_at: new Date().toISOString(),
       floor_price_snapshot: 1054.0,
       modal_price_snapshot: 1240.0
@@ -799,29 +1088,67 @@ async function saveStep5AndPublish() {
 // ── Seller: Listings ──
 async function loadSellerListings() {
   const res = await api(SELLER, 'GET', '/listings?page=1&per_page=50', null, 'seller');
-  if (res.ok) {
-    const listings = res.data.data?.listings || res.data.data || [];
-    if (!Array.isArray(listings) || listings.length === 0) {
-      $('seller-listings-table').innerHTML = '<p>No listings found.</p>';
-      return;
-    }
-    let html = '<table><tr><th>ID</th><th>Crop</th><th>Qty</th><th>Price/Q</th><th>Status</th><th>Actions</th></tr>';
-    listings.forEach(l => {
+  if (!res.ok) return;
+  const listings = res.data.data?.listings || res.data.data || [];
+
+  const activeStatuses = ['active', 'paused'];
+  const active = listings.filter(l => activeStatuses.includes(l.status));
+  const past = listings.filter(l => !activeStatuses.includes(l.status));
+
+  function formatDate(d) { return d ? new Date(d).toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—'; }
+
+  function statusBadge(s) {
+    const colors = { active:'green', paused:'orange', sold:'green', expired:'red', cancelled:'red', matched:'blue' };
+    return `<span class="badge badge-${colors[s]||'orange'}">${s}</span>`;
+  }
+
+  // Active listings
+  if (active.length === 0) {
+    $('seller-active-listings').innerHTML = '<p style="color:var(--gray); font-size:13px;">No active listings.</p>';
+  } else {
+    let html = '<table><tr><th>Crop</th><th>Variety</th><th>Qty</th><th>Price/Q</th><th>Status</th><th>Listed On</th><th>Expires</th><th>Views</th><th>Actions</th></tr>';
+    active.forEach(l => {
       html += `<tr>
-        <td style="font-size:11px">${(l.id||'').substring(0,8)}...</td>
-        <td>${l.crop||''}</td>
+        <td><strong>${l.crop||''}</strong></td>
+        <td>${l.variety||'—'}</td>
         <td>${l.quantity_kg||''} kg</td>
         <td>₹${l.ask_price_per_q||''}</td>
-        <td><span class="badge badge-green">${l.status||''}</span></td>
+        <td>${statusBadge(l.status)}</td>
+        <td style="font-size:11px;">${formatDate(l.created_at)}</td>
+        <td style="font-size:11px;">${formatDate(l.expires_at)}<br><span style="color:var(--orange);">${l.days_remaining||0} days left</span></td>
+        <td>${l.views_count||0}</td>
         <td>
-          <button class="btn btn-orange btn-sm" onclick="pauseResumeListing('${l.id}','${l.status}')">
+          <button class="btn btn-${l.status==='active'?'orange':'green'} btn-sm" onclick="pauseResumeListing('${l.id}','${l.status}')">
             ${l.status==='active'?'Pause':'Resume'}
           </button>
+          <button class="btn btn-red btn-sm" onclick="cancelListing('${l.id}')">Cancel</button>
         </td>
       </tr>`;
     });
     html += '</table>';
-    $('seller-listings-table').innerHTML = html;
+    $('seller-active-listings').innerHTML = html;
+  }
+
+  // Past / sold listings
+  if (past.length === 0) {
+    $('seller-past-listings').innerHTML = '<p style="color:var(--gray); font-size:13px;">No past listings yet.</p>';
+  } else {
+    let html = '<table><tr><th>Crop</th><th>Variety</th><th>Qty</th><th>Price/Q</th><th>Status</th><th>Listed On</th><th>Closed On</th><th>Views</th></tr>';
+    past.forEach(l => {
+      const closedAt = l.sold_at || l.cancelled_at || l.expires_at;
+      html += `<tr>
+        <td><strong>${l.crop||''}</strong></td>
+        <td>${l.variety||'—'}</td>
+        <td>${l.quantity_kg||''} kg</td>
+        <td>₹${l.ask_price_per_q||''}</td>
+        <td>${statusBadge(l.status)}</td>
+        <td style="font-size:11px;">${formatDate(l.created_at)}</td>
+        <td style="font-size:11px;">${formatDate(closedAt)}</td>
+        <td>${l.views_count||0}</td>
+      </tr>`;
+    });
+    html += '</table>';
+    $('seller-past-listings').innerHTML = html;
   }
 }
 
@@ -829,6 +1156,13 @@ async function pauseResumeListing(id, status) {
   const action = status === 'active' ? 'pause' : 'resume';
   const res = await api(SELLER, 'POST', `/listings/${id}/${action}`, {}, 'seller');
   if (res.ok) { toast(`Listing ${action}d`); loadSellerListings(); }
+}
+
+async function cancelListing(id) {
+  const reason = prompt('Reason for cancellation:');
+  if (!reason) return;
+  const res = await api(SELLER, 'POST', `/listings/${id}/cancel`, { reason }, 'seller');
+  if (res.ok) { toast('Listing cancelled — moved to Past Sales'); loadSellerListings(); }
 }
 
 // ── Seller: Analytics ──
@@ -957,8 +1291,9 @@ async function browseListings() {
           <span class="badge badge-green">${l.status}</span>
           District: ${l.district || 'N/A'} · Pickup: ${l.pickup_date || 'Flexible'}
         </div>
-        <div style="margin-top:8px;">
-          <button class="btn btn-orange btn-sm" onclick="alert('Listing ID: ${l.id}\\nCopy this to create an RFQ or offer.')">View ID</button>
+        <div style="margin-top:8px; display:flex; gap:6px;">
+          <button class="btn btn-green btn-sm" onclick="openEnquiryModal('${l.id}', '${l.crop}', '${l.variety||''}', ${l.ask_price_per_q}, ${l.quantity_kg})">Send Enquiry</button>
+          <button class="btn btn-orange btn-sm" onclick="navigator.clipboard.writeText('${l.id}'); toast('Listing ID copied');" style="font-size:11px;">Copy ID</button>
         </div>
       </div>`;
     });
@@ -1057,6 +1392,444 @@ async function loadBuyerAnalytics(type) {
   $('buyer-analytics-result').textContent = JSON.stringify(res.data, null, 2);
 }
 
+// ── Enquiry Modal ──
+function openEnquiryModal(listingId, crop, variety, price, qty) {
+  $('eq-listing-id').value = listingId;
+  $('eq-modal-listing-info').textContent = `${crop}${variety ? ' — ' + variety : ''} · ₹${price}/quintal · ${qty} kg available`;
+  $('eq-qty').value = '';
+  $('eq-price').value = '';
+  $('eq-payment').value = '';
+  $('eq-pincode').value = '';
+  $('eq-district').value = '';
+  $('eq-message').value = '';
+  const d = new Date(); d.setDate(d.getDate() + 7);
+  $('eq-required-by').value = d.toISOString().split('T')[0];
+  $('enquiry-modal').classList.add('open');
+}
+
+function closeEnquiryModal() {
+  $('enquiry-modal').classList.remove('open');
+}
+
+async function submitEnquiry() {
+  const listingId = v('eq-listing-id');
+  const qty = Number(v('eq-qty'));
+  if (!qty || qty <= 0) { toast('Enter quantity', 'error'); return; }
+
+  const body = {
+    quantity_kg: qty,
+    offered_price_per_q: Number(v('eq-price')) || undefined,
+    payment_mode: v('eq-payment') || undefined,
+    delivery_pincode: v('eq-pincode') || undefined,
+    delivery_district: v('eq-district') || undefined,
+    required_by_date: v('eq-required-by') || undefined,
+    message: v('eq-message') || undefined,
+  };
+  Object.keys(body).forEach(k => body[k] === undefined && delete body[k]);
+
+  const res = await api(BUYER, 'POST', `/browse/listings/${listingId}/enquiry`, body, 'buyer');
+  if (res.ok && res.data.success) {
+    toast('Enquiry sent successfully!');
+    closeEnquiryModal();
+  } else if (res.ok && !res.data.success) {
+    toast(res.data.message || 'Failed to send enquiry', 'error');
+  }
+}
+
+// ── Seller: Enquiries ──
+async function loadSellerEnquiries() {
+  const status = v('eq-filter-status');
+  let url = '/enquiries/my?page=1&per_page=50';
+  if (status) url += `&status=${status}`;
+  const res = await api(SELLER, 'GET', url, null, 'seller');
+  if (!res.ok) { $('seller-enquiries-list').innerHTML = '<p>Failed to load.</p>'; return; }
+
+  const enquiries = res.data.data?.enquiries || [];
+  if (enquiries.length === 0) {
+    $('seller-enquiries-list').innerHTML = '<div class="card"><p style="color:var(--gray);">No enquiries yet. Buyers will send enquiries from Browse Listings.</p></div>';
+    return;
+  }
+
+  let html = '';
+  enquiries.forEach(e => {
+    const statusClass = 'badge-' + e.status;
+    html += `<div class="enquiry-card">
+      <div class="eq-header">
+        <div>
+          <strong>${e.listing_crop || 'Listing'} ${e.listing_variety ? '— ' + e.listing_variety : ''}</strong>
+          <span style="font-size:11px; color:var(--gray); margin-left:8px;">${e.listing_number || ''}</span>
+        </div>
+        <span class="badge ${statusClass}">${e.status}</span>
+      </div>
+      <div class="eq-detail">
+        <strong>Buyer:</strong> ${e.buyer_name || 'Anonymous'} ${e.buyer_district ? '(' + e.buyer_district + ')' : ''}<br>
+        <strong>Wants:</strong> ${e.quantity_kg} kg · ${e.offered_price_per_q ? '₹' + e.offered_price_per_q + '/q offered' : 'No price offered'}
+        ${e.payment_mode ? ' · Payment: ' + e.payment_mode : ''}
+        ${e.delivery_district ? ' · Deliver to: ' + e.delivery_district : ''}
+        ${e.delivery_pincode ? ' ' + e.delivery_pincode : ''}<br>
+        ${e.required_by_date ? '<strong>Needed by:</strong> ' + e.required_by_date.split(' ')[0] + '<br>' : ''}
+        ${e.message ? '<strong>Message:</strong> ' + e.message + '<br>' : ''}
+        ${e.seller_quoted_price ? '<strong>Your Quote:</strong> ₹' + e.seller_quoted_price + '/q' + (e.seller_available_qty ? ' · ' + e.seller_available_qty + ' kg' : '') + (e.seller_delivery_days ? ' · ' + e.seller_delivery_days + ' days' : '') + '<br>' : ''}
+        ${e.seller_message ? '<strong>Your Reply:</strong> ' + e.seller_message + '<br>' : ''}
+        <strong>Counter rounds:</strong> ${e.counter_count}/3 · <strong>Sent:</strong> ${e.created_at ? new Date(e.created_at).toLocaleString() : '—'}
+      </div>
+      <div class="eq-actions">
+        ${['pending','viewed','negotiating'].includes(e.status) ? `<button class="btn btn-blue btn-sm" onclick="$('resp-enquiry-id').value='${e.id}'; toast('Enquiry selected');">Select</button>` : ''}
+        ${e.status === 'pending' ? `<button class="btn btn-orange btn-sm" onclick="markEnquiryViewed('${e.id}')">Mark Viewed</button>` : ''}
+      </div>
+    </div>`;
+  });
+  $('seller-enquiries-list').innerHTML = html;
+}
+
+async function markEnquiryViewed(id) {
+  const res = await api(SELLER, 'POST', `/enquiries/${id}/viewed`, null, 'seller');
+  if (res.ok) { toast('Marked as viewed'); loadSellerEnquiries(); }
+}
+
+async function sellerRespondEnquiry() {
+  const id = v('resp-enquiry-id');
+  if (!id) { toast('Select an enquiry first', 'error'); return; }
+  const price = Number(v('resp-price'));
+  if (!price) { toast('Enter your quoted price', 'error'); return; }
+
+  const body = {
+    quoted_price_per_q: price,
+    available_quantity_kg: Number(v('resp-qty')) || undefined,
+    delivery_within_days: Number(v('resp-days')) || undefined,
+    message: v('resp-message') || undefined,
+  };
+  Object.keys(body).forEach(k => body[k] === undefined && delete body[k]);
+
+  const res = await api(SELLER, 'POST', `/enquiries/${id}/respond`, body, 'seller');
+  if (res.ok) { toast('Quote sent!'); loadSellerEnquiries(); }
+}
+
+async function sellerAcceptEnquiry() {
+  const id = v('resp-enquiry-id');
+  if (!id) { toast('Select an enquiry first', 'error'); return; }
+  const res = await api(SELLER, 'POST', `/enquiries/${id}/accept`, null, 'seller');
+  if (res.ok) { toast('Enquiry accepted!'); loadSellerEnquiries(); }
+}
+
+async function sellerRejectEnquiry() {
+  const id = v('resp-enquiry-id');
+  if (!id) { toast('Select an enquiry first', 'error'); return; }
+  const res = await api(SELLER, 'POST', `/enquiries/${id}/reject`, null, 'seller');
+  if (res.ok) { toast('Enquiry rejected.'); loadSellerEnquiries(); }
+}
+
+// ── Buyer: My Enquiries ──
+async function loadBuyerEnquiries() {
+  const res = await api(BUYER, 'GET', '/browse/my-enquiries?page=1&per_page=50', null, 'buyer');
+  if (!res.ok) { $('buyer-enquiries-list').innerHTML = '<p>Failed to load.</p>'; return; }
+
+  const enquiries = res.data.data?.enquiries || [];
+  if (enquiries.length === 0) {
+    $('buyer-enquiries-list').innerHTML = '<div class="card"><p style="color:var(--gray);">No enquiries sent yet. Browse listings and click "Send Enquiry" to get started.</p></div>';
+    return;
+  }
+
+  let html = '';
+  enquiries.forEach(e => {
+    const statusClass = 'badge-' + e.status;
+    html += `<div class="enquiry-card">
+      <div class="eq-header">
+        <div>
+          <strong>${e.listing_crop || 'Listing'} ${e.listing_variety ? '— ' + e.listing_variety : ''}</strong>
+          <span style="font-size:11px; color:var(--gray); margin-left:8px;">${e.listing_number || ''}</span>
+        </div>
+        <span class="badge ${statusClass}">${e.status}</span>
+      </div>
+      <div class="eq-detail">
+        <strong>Your request:</strong> ${e.quantity_kg} kg · ${e.offered_price_per_q ? '₹' + e.offered_price_per_q + '/q' : 'No price offered'}
+        ${e.payment_mode ? ' · ' + e.payment_mode : ''}<br>
+        ${e.message ? '<strong>Your message:</strong> ' + e.message + '<br>' : ''}
+        ${e.seller_quoted_price ? '<hr style="margin:6px 0; border-color:var(--border);">' +
+          '<strong>Seller Quote:</strong> ₹' + e.seller_quoted_price + '/q' +
+          (e.seller_available_qty ? ' · ' + e.seller_available_qty + ' kg available' : '') +
+          (e.seller_delivery_days ? ' · Delivery: ' + e.seller_delivery_days + ' days' : '') + '<br>' : ''}
+        ${e.seller_message ? '<strong>Seller says:</strong> ' + e.seller_message + '<br>' : ''}
+        ${e.accepted_at ? '<span style="color:var(--green); font-weight:700;">✓ Accepted on ' + new Date(e.accepted_at).toLocaleString() + '</span><br>' : ''}
+        ${e.rejected_at ? '<span style="color:var(--red);">✗ Rejected on ' + new Date(e.rejected_at).toLocaleString() + '</span><br>' : ''}
+        <strong>Counter rounds:</strong> ${e.counter_count}/3 · <strong>Sent:</strong> ${e.created_at ? new Date(e.created_at).toLocaleString() : '—'}
+      </div>
+      <div class="eq-actions">
+        ${e.status === 'responded' ? `<button class="btn btn-orange btn-sm" onclick="$('counter-eq-id').value='${e.id}'; toast('Enquiry selected for counter');">Select for Counter</button>` : ''}
+        ${['pending','viewed','responded','negotiating'].includes(e.status) ? `<button class="btn btn-red btn-sm" onclick="buyerWithdrawSingle('${e.id}')">Withdraw</button>` : ''}
+      </div>
+    </div>`;
+  });
+  $('buyer-enquiries-list').innerHTML = html;
+}
+
+async function buyerCounterEnquiry() {
+  const id = v('counter-eq-id');
+  if (!id) { toast('Select an enquiry first', 'error'); return; }
+  const price = Number(v('counter-eq-price'));
+  if (!price) { toast('Enter your counter price', 'error'); return; }
+
+  const body = {
+    offered_price_per_q: price,
+    quantity_kg: Number(v('counter-eq-qty')) || undefined,
+    message: v('counter-eq-message') || undefined,
+  };
+  Object.keys(body).forEach(k => body[k] === undefined && delete body[k]);
+
+  const res = await api(BUYER, 'POST', `/browse/enquiries/${id}/counter`, body, 'buyer');
+  if (res.ok) { toast('Counter sent!'); loadBuyerEnquiries(); }
+}
+
+async function buyerWithdrawEnquiry() {
+  const id = v('counter-eq-id');
+  if (!id) { toast('Select an enquiry first', 'error'); return; }
+  const res = await api(BUYER, 'POST', `/browse/enquiries/${id}/withdraw`, null, 'buyer');
+  if (res.ok) { toast('Enquiry withdrawn.'); loadBuyerEnquiries(); }
+}
+
+async function buyerWithdrawSingle(id) {
+  const res = await api(BUYER, 'POST', `/browse/enquiries/${id}/withdraw`, null, 'buyer');
+  if (res.ok) { toast('Enquiry withdrawn.'); loadBuyerEnquiries(); }
+}
+
+// ── Seller: Orders ──
+function statusBadge(s) {
+  const map = { completed:'green', confirmed:'blue', dispatched:'blue', delivered:'blue', awaiting_payment:'orange', cancelled:'red', refunded:'red', disputed:'red' };
+  return `<span class="badge badge-${map[s]||'orange'}">${s.replace(/_/g,' ')}</span>`;
+}
+
+async function loadSellerOrders() {
+  const res = await api(SELLER, 'GET', '/orders/my?page=1&per_page=50', null, 'seller');
+  if (!res.ok) { $('seller-orders-list').innerHTML = '<p>Failed to load.</p>'; return; }
+
+  const orders = res.data.data?.orders || [];
+  if (orders.length === 0) {
+    $('seller-orders-list').innerHTML = '<div class="card"><p style="color:var(--gray);">No orders yet. Accept an enquiry to create your first order.</p></div>';
+    return;
+  }
+
+  let html = '';
+  orders.forEach(o => {
+    html += `<div class="card" style="margin-bottom:12px; border-left:4px solid ${o.escrow_status === 'held' ? 'var(--green)' : o.escrow_status === 'pending' ? 'var(--orange)' : 'var(--gray)'};">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <strong>${o.order_number}</strong>
+        <div>${statusBadge(o.status)} <span class="badge badge-${o.escrow_status === 'held' ? 'green' : o.escrow_status === 'released' ? 'blue' : 'orange'}">Escrow: ${o.escrow_status}</span></div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; font-size:13px;">
+        <div><strong>Crop:</strong> ${o.crop} ${o.variety ? '— ' + o.variety : ''}</div>
+        <div><strong>Qty:</strong> ${o.quantity_kg} kg</div>
+        <div><strong>Price:</strong> ₹${o.price_per_q}/Q</div>
+        <div><strong>Total:</strong> ₹${o.total_amount.toLocaleString()}</div>
+        <div style="color:var(--red);"><strong>Commission:</strong> -₹${o.commission_amount.toLocaleString()} (2%)</div>
+        <div style="color:var(--orange);"><strong>TDS:</strong> -₹${o.tds_amount.toLocaleString()} (1%)</div>
+      </div>
+      <div style="font-size:15px; font-weight:700; color:var(--green); margin-top:6px;">Your Payout: ₹${o.net_seller_payout.toLocaleString()}</div>
+      ${o.invoice_number ? `<div style="font-size:12px; color:var(--gray); margin-top:4px;">Invoice: ${o.invoice_number}</div>` : ''}
+      <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+        ${o.status === 'awaiting_payment' ? '<span style="font-size:12px; color:var(--orange);">Waiting for buyer payment...</span>' : ''}
+        ${o.status === 'confirmed' ? `<button class="btn btn-blue btn-sm" onclick="orderAction('dispatch','${o.id}')">Dispatch</button>` : ''}
+        ${o.status === 'dispatched' ? `<button class="btn btn-green btn-sm" onclick="orderAction('deliver','${o.id}')">Mark Delivered</button>` : ''}
+        ${o.status === 'delivered' ? '<span style="font-size:12px; color:var(--blue);">Waiting for buyer OTP confirmation...</span>' : ''}
+        ${o.status === 'completed' ? '<span style="font-size:12px; color:var(--green);">Payment released to you</span>' : ''}
+        ${o.status === 'disputed' ? `<span style="font-size:12px; color:var(--red);">Dispute: ${o.dispute_reason || 'Under review'}</span>` : ''}
+        ${(o.status === 'delivered' || o.status === 'completed') && o.dispute_status !== 'open' ? `<button class="btn btn-red btn-sm" onclick="raiseDispute('${o.id}','seller','${o.seller_id}')">Raise Dispute</button>` : ''}
+        ${o.invoice_number ? `<button class="btn btn-sm" onclick="viewInvoice('${o.id}','${o.seller_id}')">View Invoice</button>` : ''}
+      </div>
+    </div>`;
+  });
+  $('seller-orders-list').innerHTML = html;
+}
+
+async function orderAction(action, orderId) {
+  const res = await api(SELLER, 'POST', `/orders/${orderId}/${action}`, null, 'seller');
+  if (res.ok) { toast(`Order ${action}ed!`); loadSellerOrders(); }
+}
+
+// ── Buyer: Orders (escrow + OTP) ──
+function getBuyerId() {
+  const token = v('buyer-token');
+  if (!token) return null;
+  try { return JSON.parse(atob(token.split('.')[1])).buyer_id; } catch(e) { return null; }
+}
+
+async function loadBuyerOrders() {
+  const buyerId = getBuyerId();
+  if (!buyerId) { $('buyer-orders-list').innerHTML = '<p>Set buyer token first.</p>'; return; }
+
+  const res = await api(BUYER, 'GET', '/browse/my-orders?page=1&per_page=50', null, 'buyer');
+  if (!res.ok) { $('buyer-orders-list').innerHTML = '<p>Failed to load.</p>'; return; }
+
+  const orders = res.data.data?.orders || [];
+  if (orders.length === 0) {
+    $('buyer-orders-list').innerHTML = '<div class="card"><p style="color:var(--gray);">No orders yet. Send enquiries and get them accepted to see orders here.</p></div>';
+    return;
+  }
+
+  let html = '';
+  orders.forEach(o => {
+    html += `<div class="card" style="margin-bottom:12px; border-left:4px solid ${o.status === 'awaiting_payment' ? 'var(--orange)' : o.status === 'completed' ? 'var(--green)' : 'var(--blue)'};">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <strong>${o.order_number}</strong>
+        <div>${statusBadge(o.status)} <span class="badge badge-${o.escrow_status === 'held' ? 'green' : o.escrow_status === 'released' ? 'blue' : 'orange'}">Escrow: ${o.escrow_status}</span></div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; font-size:13px;">
+        <div><strong>Crop:</strong> ${o.crop} ${o.variety ? '— ' + o.variety : ''}</div>
+        <div><strong>Qty:</strong> ${o.quantity_kg} kg</div>
+        <div><strong>Price:</strong> ₹${o.price_per_q}/Q</div>
+        <div><strong>Total:</strong> ₹${o.total_amount.toLocaleString()}</div>
+      </div>
+      ${o.invoice_number ? `<div style="font-size:12px; color:var(--gray); margin-top:4px;">Invoice: ${o.invoice_number}</div>` : ''}
+      <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+        ${o.status === 'awaiting_payment' ? `<button class="btn btn-green btn-sm" onclick="escrowPay('${o.id}','${o.buyer_id}')">Pay ₹${o.total_amount.toLocaleString()} (Escrow)</button>
+          <button class="btn btn-red btn-sm" onclick="cancelOrder('${o.id}','buyer','${o.buyer_id}')">Cancel</button>` : ''}
+        ${o.status === 'confirmed' ? '<span style="font-size:12px; color:var(--blue);">Payment held. Waiting for seller to dispatch...</span>' : ''}
+        ${o.status === 'confirmed' ? `<button class="btn btn-red btn-sm" onclick="cancelOrder('${o.id}','buyer','${o.buyer_id}')">Cancel</button>` : ''}
+        ${o.status === 'dispatched' ? '<span style="font-size:12px; color:var(--blue);">Order dispatched. Will arrive soon.</span>' : ''}
+        ${o.status === 'delivered' ? `
+          <div style="display:flex; gap:4px; align-items:center;">
+            <input type="text" id="otp-${o.id}" maxlength="6" placeholder="Enter 6-digit OTP" style="width:140px; padding:4px 8px; border:1px solid var(--border); border-radius:4px;">
+            <button class="btn btn-green btn-sm" onclick="confirmWithOTP('${o.id}','${o.buyer_id}')">Confirm Delivery</button>
+          </div>
+          <div style="font-size:11px; color:var(--gray); width:100%;">OTP was shared when you paid. Enter it to release payment to seller.</div>
+        ` : ''}
+        ${o.status === 'completed' ? '<span style="font-size:12px; color:var(--green);">Completed. Payment released to seller.</span>' : ''}
+        ${o.status === 'disputed' ? `<span style="font-size:12px; color:var(--red);">Dispute: ${o.dispute_reason || 'Under review'}. Escrow frozen.</span>` : ''}
+        ${(o.status === 'delivered' || o.status === 'completed') && o.dispute_status !== 'open' ? `<button class="btn btn-red btn-sm" onclick="raiseDispute('${o.id}','buyer','${o.buyer_id}')">Raise Dispute</button>` : ''}
+        ${o.invoice_number ? `<button class="btn btn-sm" onclick="viewInvoice('${o.id}','${o.buyer_id}')">View Invoice</button>` : ''}
+      </div>
+    </div>`;
+  });
+  $('buyer-orders-list').innerHTML = html;
+}
+
+async function escrowPay(orderId, buyerId) {
+  if (!confirm('Pay into platform escrow? Amount will be held until delivery is confirmed.')) return;
+  const res = await api(BUYER, 'POST', `/browse/orders/${orderId}/escrow-pay`, null, 'buyer');
+  if (res.ok && res.data.success) {
+    const otp = res.data.data?.delivery_otp;
+    alert(`Payment held in escrow!\n\nYour Delivery OTP: ${otp}\n\nSave this OTP. Share it with the seller at delivery to release payment.`);
+    loadBuyerOrders();
+  } else if (res.ok) {
+    toast(res.data.message || 'Payment failed', 'error');
+  }
+}
+
+async function confirmWithOTP(orderId, buyerId) {
+  const otp = document.getElementById(`otp-${orderId}`).value.trim();
+  if (!otp || otp.length !== 6) { toast('Enter the 6-digit OTP', 'error'); return; }
+  const res = await api(BUYER, 'POST', `/browse/orders/${orderId}/confirm-delivery`, { otp }, 'buyer');
+  if (res.ok && res.data.success) {
+    toast('Delivery confirmed! Payment released. Invoice generated.');
+    loadBuyerOrders();
+  } else if (res.ok) {
+    toast(res.data.message || 'Confirmation failed', 'error');
+  }
+}
+
+async function cancelOrder(orderId, cancelledBy, cancellerId) {
+  const reason = prompt('Reason for cancellation:');
+  if (!reason) return;
+  let res;
+  if (cancelledBy === 'buyer') {
+    res = await api(BUYER, 'POST', `/browse/orders/${orderId}/cancel`, { reason }, 'buyer');
+  } else {
+    res = await api(SELLER, 'POST', `/orders/${orderId}/cancel`, { cancelled_by: 'seller', canceller_id: cancellerId, reason }, null);
+  }
+  if (res.ok && (res.data.success !== false)) {
+    toast('Order cancelled. Escrow refunded if paid.');
+    if (cancelledBy === 'buyer') loadBuyerOrders(); else loadSellerOrders();
+  } else if (res.ok) {
+    toast(res.data.message || 'Cancel failed', 'error');
+  }
+}
+
+async function raiseDispute(orderId, raisedBy, raiserId) {
+  const reason = prompt('Describe the issue (quality mismatch, short delivery, damaged goods, etc.):');
+  if (!reason) return;
+  let res;
+  if (raisedBy === 'buyer') {
+    res = await api(BUYER, 'POST', `/browse/orders/${orderId}/dispute`, { reason }, 'buyer');
+  } else {
+    res = await api(SELLER, 'POST', `/orders/${orderId}/dispute`, { raised_by: 'seller', raiser_id: raiserId, reason }, null);
+  }
+  if (res.ok && (res.data.success !== false)) {
+    toast('Dispute raised. Escrow frozen until platform resolves it.');
+    if (raisedBy === 'buyer') loadBuyerOrders(); else loadSellerOrders();
+  } else if (res.ok) {
+    toast(res.data.message || 'Dispute failed', 'error');
+  }
+}
+
+async function viewInvoice(orderId, requesterId) {
+  // Try buyer-service first (buyer view), fall back to seller-service (seller view)
+  const buyerId = getBuyerId();
+  let res;
+  if (buyerId === requesterId) {
+    res = await api(BUYER, 'GET', `/browse/orders/${orderId}/invoice`, null, 'buyer');
+  } else {
+    res = await api(SELLER, 'GET', `/orders/${orderId}/invoice?requester_id=${requesterId}`, null, null);
+  }
+  if (!res.ok || !res.data.success) {
+    toast(res.data.message || 'Invoice fetch failed', 'error');
+    return;
+  }
+  const inv = res.data.data;
+  alert(`PLATFORM INVOICE\n${'─'.repeat(30)}\nInvoice #: ${inv.invoice_number}\nDate: ${inv.date}\n\nCrop: ${inv.crop} ${inv.variety || ''}\nQuantity: ${inv.quantity_kg} kg\nPrice: ₹${inv.price_per_quintal}/Q\n\nGross Amount: ₹${inv.gross_amount}\nCommission (${inv.platform_commission_pct}%): -₹${inv.platform_commission}\nTDS (${inv.tds_pct}%): -₹${inv.tds_amount}\n\nNet Seller Payout: ₹${inv.net_seller_payout}\n${'─'.repeat(30)}\nPlatform: ${inv.platform}`);
+}
+
+// ── Platform Revenue ──
+async function loadPlatformRevenue() {
+  const res = await api(SELLER, 'GET', '/platform/revenue', null, null);
+  if (!res.ok) { $('revenue-dashboard').innerHTML = '<p>Failed to load.</p>'; return; }
+
+  const d = res.data.data || {};
+  $('revenue-dashboard').innerHTML = `
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:12px; color:var(--gray); text-transform:uppercase;">Total GMV</div>
+        <div style="font-size:28px; font-weight:700; color:var(--blue);">₹${(d.total_gmv || 0).toLocaleString()}</div>
+        <div style="font-size:11px; color:var(--gray);">Gross Merchandise Value</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:12px; color:var(--gray); text-transform:uppercase;">Commission Earned</div>
+        <div style="font-size:28px; font-weight:700; color:var(--green);">₹${(d.total_commission_earned || 0).toLocaleString()}</div>
+        <div style="font-size:11px; color:var(--gray);">${d.commission_rate_percent || 2}% per transaction</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:12px; color:var(--gray); text-transform:uppercase;">TDS Collected</div>
+        <div style="font-size:28px; font-weight:700; color:var(--orange);">₹${(d.total_tds_collected || 0).toLocaleString()}</div>
+        <div style="font-size:11px; color:var(--gray);">${d.tds_rate_percent || 1}% TDS</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:12px; color:var(--gray); text-transform:uppercase;">Total Orders</div>
+        <div style="font-size:28px; font-weight:700; color:var(--gray);">${d.total_orders || 0}</div>
+        <div style="font-size:11px; color:var(--gray);">Active transactions</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <h3>Commission Breakdown</h3>
+      <table style="width:100%; font-size:13px; margin-top:8px;">
+        <tr><td>Gross Merchandise Value (GMV)</td><td style="text-align:right; font-weight:700;">₹${(d.total_gmv || 0).toLocaleString()}</td></tr>
+        <tr><td>Platform Commission (${d.commission_rate_percent || 2}%)</td><td style="text-align:right; color:var(--green); font-weight:700;">₹${(d.total_commission_earned || 0).toLocaleString()}</td></tr>
+        <tr><td>TDS Collected (${d.tds_rate_percent || 1}%)</td><td style="text-align:right; color:var(--orange);">₹${(d.total_tds_collected || 0).toLocaleString()}</td></tr>
+        <tr style="border-top:2px solid var(--border);"><td><strong>Net Paid to Sellers</strong></td><td style="text-align:right; font-weight:700;">₹${((d.total_gmv || 0) - (d.total_commission_earned || 0) - (d.total_tds_collected || 0)).toLocaleString()}</td></tr>
+      </table>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <h3>Order Lifecycle (Platform Lock-in)</h3>
+      <div style="font-size:13px; line-height:1.8;">
+        <div>1. Buyer sends enquiry → <strong>Phone numbers masked</strong></div>
+        <div>2. Seller accepts → Order created (<strong>awaiting_payment</strong>)</div>
+        <div>3. Buyer pays into <strong>escrow</strong> → Gets delivery OTP → Status: <strong>confirmed</strong></div>
+        <div>4. Seller dispatches → Status: <strong>dispatched</strong></div>
+        <div>5. Seller marks delivered → Status: <strong>delivered</strong></div>
+        <div>6. Buyer enters <strong>OTP</strong> to confirm → Escrow released → <strong>Invoice generated</strong></div>
+        <div>7. Either party can <strong>raise dispute</strong> → Escrow frozen → Platform resolves</div>
+      </div>
+    </div>
+  `;
+}
+
 // ── Init ──
 // Set default pickup date to 3 days from now
 const d = new Date(); d.setDate(d.getDate() + 3);
@@ -1064,8 +1837,23 @@ $('s-pickup-date').value = d.toISOString().split('T')[0];
 const d2 = new Date(); d2.setDate(d2.getDate() + 14);
 $('req-delivery-date').value = d2.toISOString().split('T')[0];
 
-// Show first panel
+// Restore tokens from localStorage
+if (localStorage.getItem('seller_token')) {
+  $('seller-token').value = localStorage.getItem('seller_token');
+  $('seller-token').dispatchEvent(new Event('input'));
+}
+if (localStorage.getItem('buyer_token')) {
+  $('buyer-token').value = localStorage.getItem('buyer_token');
+  $('buyer-token').dispatchEvent(new Event('input'));
+}
+
+// Save tokens to localStorage on change
+$('seller-token').addEventListener('input', () => localStorage.setItem('seller_token', $('seller-token').value));
+$('buyer-token').addEventListener('input', () => localStorage.setItem('buyer_token', $('buyer-token').value));
+
+// Show first panel and load drafts
 showPanel('seller-draft');
+setTimeout(() => { if (v('seller-token')) loadMyDrafts(); }, 300);
 </script>
 </body>
 </html>

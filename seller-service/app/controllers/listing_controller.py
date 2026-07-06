@@ -64,6 +64,20 @@ class ListingController:
         return StandardResponse(success=True, message="Listing cancelled.", data=data)
 
     @staticmethod
+    async def browse_public_listings(
+        db: AsyncSession,
+        crop: str | None = None,
+        district: str | None = None,
+        min_qty: float | None = None,
+        max_price: float | None = None,
+        page: int = 1,
+        per_page: int = 20,
+    ) -> StandardResponse:
+        svc = ListingService(db)
+        data = await svc.browse_public_listings(crop, district, min_qty, max_price, page, per_page)
+        return StandardResponse(success=True, data=data)
+
+    @staticmethod
     async def get_public_listing(listing_id: UUID, db: AsyncSession) -> StandardResponse:
         svc = ListingService(db)
         data = await svc.get_public_listing(listing_id)

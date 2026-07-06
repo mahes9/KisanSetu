@@ -39,6 +39,20 @@ def register_exception_handlers(app: FastAPI) -> None:
             },
         )
 
+    @app.exception_handler(ValueError)
+    async def value_error_handler(
+        request: Request, exc: ValueError
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "success": False,
+                "error_code": "BAD_REQUEST",
+                "message_en": str(exc),
+                "message_te": str(exc),
+            },
+        )
+
     @app.exception_handler(Exception)
     async def generic_exception_handler(
         request: Request, exc: Exception

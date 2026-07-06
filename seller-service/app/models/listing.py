@@ -34,6 +34,9 @@ class Listing(TimestampMixin, Base):
     ask_price_per_q: Mapped[float] = mapped_column(Float, nullable=False)
     floor_price_at_publish: Mapped[float] = mapped_column(Float, nullable=False)
     modal_price_at_publish: Mapped[float] = mapped_column(Float, nullable=False)
+    payment_terms: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    negotiable: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    price_validity_days: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     transport_type: Mapped[str | None] = mapped_column(String(30), nullable=True)
     pickup_window: Mapped[str | None] = mapped_column(String(20), nullable=True)

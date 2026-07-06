@@ -123,10 +123,11 @@ class RequirementService:
             raise RequirementNotOwnedError()
         return req
 
-    def _generate_req_number(self, district_code: str) -> str:
+    def _generate_req_number(self, district_code: str | None) -> str:
         now = datetime.now(timezone.utc)
         random_part = secrets.token_hex(3).upper()
-        return f"REQ-{district_code[:3].upper()}-{now.strftime('%Y%m')}-{random_part}"
+        code = (district_code or "GEN")[:3].upper()
+        return f"REQ-{code}-{now.strftime('%Y%m')}-{random_part}"
 
     def _build_response(self, req) -> dict:
         return {

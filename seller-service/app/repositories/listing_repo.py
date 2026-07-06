@@ -29,6 +29,7 @@ class ListingRepository:
 
         step1 = draft.step1_data or {}
         step2 = draft.step2_data or {}
+        step3 = draft.step3_data or {}
         step4 = draft.step4_data or {}
 
         listing = Listing(
@@ -47,6 +48,9 @@ class ListingRepository:
             ask_price_per_q=publish_data.get("ask_price_per_q", 0),
             floor_price_at_publish=locked_floor,
             modal_price_at_publish=locked_modal,
+            payment_terms=step3.get("payment_terms"),
+            negotiable=step3.get("negotiable") in (True, "yes", "true", "1"),
+            price_validity_days=int(step3["price_validity_days"]) if step3.get("price_validity_days") else None,
             transport_type=step4.get("transport_type"),
             pickup_window=step4.get("pickup_window"),
             pickup_date=date.fromisoformat(step4["pickup_date"]) if step4.get("pickup_date") else None,

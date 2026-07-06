@@ -12,3 +12,10 @@ venv/
 
 # secrets
 .mcp.json
+.gstack/
+.env
+*.env
+
+# claude code (local)
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
