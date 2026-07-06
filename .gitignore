@@ -1,0 +1,21 @@
+# data caches (regenerated on run)
+data/
+journal/
+
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# secrets
+.mcp.json
+.gstack/
+.env
+*.env
+
+# claude code (local)
+.claude/settings.local.json
+.claude/scheduled_tasks.lock

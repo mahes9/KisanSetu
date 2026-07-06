@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  buyer-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: kisangpt_buyer
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - buyer_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  buyer-redis:
+    image: redis:7-alpine
+    ports:
+      - "6381:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  buyer-service:
+    build: .
+    ports:
+      - "8002:8002"
+    env_file:
+      - .env
+    depends_on:
+      buyer-db:
+        condition: service_healthy
+      buyer-redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@buyer-db:5432/kisangpt_buyer
+      REDIS_URL: redis://buyer-redis:6379/0
+
+volumes:
+  buyer_pgdata:

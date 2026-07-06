@@ -21,6 +21,7 @@ class Listing(TimestampMixin, Base):
     source_draft_id: Mapped[uuid.UUID | None] = mapped_column(PG_UUID(as_uuid=True), ForeignKey("listing_drafts.id"), nullable=True)
 
     crop: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
+    variety: Mapped[str | None] = mapped_column(String(50), nullable=True)
     quantity_kg: Mapped[float] = mapped_column(Float, nullable=False)
     harvest_status: Mapped[str | None] = mapped_column(String(30), nullable=True)
     days_since_harvest: Mapped[int | None] = mapped_column(Integer, nullable=True)
@@ -33,6 +34,9 @@ class Listing(TimestampMixin, Base):
     ask_price_per_q: Mapped[float] = mapped_column(Float, nullable=False)
     floor_price_at_publish: Mapped[float] = mapped_column(Float, nullable=False)
     modal_price_at_publish: Mapped[float] = mapped_column(Float, nullable=False)
+    payment_terms: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    negotiable: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    price_validity_days: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     transport_type: Mapped[str | None] = mapped_column(String(30), nullable=True)
     pickup_window: Mapped[str | None] = mapped_column(String(20), nullable=True)

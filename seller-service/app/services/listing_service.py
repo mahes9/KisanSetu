@@ -6,12 +6,14 @@ import logging
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.clients.event_bus_client import EventBusClient
 from app.clients.notification_client import NotificationClient
 from app.clients.price_client import PriceClient
 from app.core.constants import ListingConfig
+from app.models.listing import Listing
 from app.core.exceptions import (
     AlreadyPublishedError,
     DraftNotFoundError,
@@ -179,6 +181,65 @@ class ListingService:
         listing = await self._get_owned_listing(listing_id, seller_id)
         return self._listing_to_dict(listing)
 
+    async def browse_public_listings(
+        self,
+        crop: str | None = None,
+        district: str | None = None,
+        min_qty: float | None = None,
+        max_price: float | None = None,
+        page: int = 1,
+        per_page: int = 20,
+    ) -> dict:
+        query = select(Listing).where(Listing.status == "active")
+        count_query = select(func.count(Listing.id)).where(Listing.status == "active")
+
+        if crop:
+            query = query.where(Listing.crop == crop)
+            count_query = count_query.where(Listing.crop == crop)
+        if min_qty:
+            query = query.where(Listing.quantity_kg >= min_qty)
+            count_query = count_query.where(Listing.quantity_kg >= min_qty)
+        if max_price:
+            query = query.where(Listing.ask_price_per_q <= max_price)
+            count_query = count_query.where(Listing.ask_price_per_q <= max_price)
+
+        query = query.order_by(Listing.created_at.desc())
+        query = query.offset((page - 1) * per_page).limit(per_page)
+
+        result = await self.session.execute(query)
+        total_result = await self.session.execute(count_query)
+        listings = list(result.scalars().all())
+        total = total_result.scalar() or 0
+
+        return {
+            "listings": [self._public_listing_dict(l) for l in listings],
+            "total": total,
+            "page": page,
+            "per_page": per_page,
+        }
+
+    def _public_listing_dict(self, listing) -> dict:
+        return {
+            "id": str(listing.id),
+            "listing_number": listing.listing_number,
+            "crop": listing.crop,
+            "variety": listing.variety,
+            "quantity_kg": listing.quantity_kg,
+            "grade": listing.grade,
+            "ask_price_per_q": listing.ask_price_per_q,
+            "payment_terms": listing.payment_terms,
+            "negotiable": listing.negotiable,
+            "harvest_status": listing.harvest_status,
+            "transport_type": listing.transport_type,
+            "pickup_window": listing.pickup_window,
+            "pickup_date": str(listing.pickup_date) if listing.pickup_date else None,
+            "pickup_address": listing.pickup_address,
+            "status": listing.status,
+            "expires_at": str(listing.expires_at),
+            "views_count": listing.views_count,
+            "created_at": str(listing.created_at) if listing.created_at else None,
+        }
+
     async def get_public_listing(self, listing_id: UUID) -> dict:
         listing = await self.listing_repo.get_listing_by_id(listing_id)
         if not listing:
@@ -187,16 +248,23 @@ class ListingService:
         return {
             "listing_number": listing.listing_number,
             "crop": listing.crop,
+            "variety": listing.variety,
             "quantity_kg": listing.quantity_kg,
             "grade": listing.grade,
             "ask_price_per_q": listing.ask_price_per_q,
+            "payment_terms": listing.payment_terms,
+            "negotiable": listing.negotiable,
+            "price_validity_days": listing.price_validity_days,
             "harvest_status": listing.harvest_status,
             "transport_type": listing.transport_type,
             "pickup_window": listing.pickup_window,
+            "pickup_date": str(listing.pickup_date) if listing.pickup_date else None,
+            "pickup_address": listing.pickup_address,
             "status": listing.status,
             "expires_at": str(listing.expires_at),
             "views_count": listing.views_count + 1,
             "created_at": str(listing.created_at),
+            "sold_at": str(listing.sold_at) if listing.sold_at else None,
         }
 
     async def list_my_listings(
@@ -235,6 +303,7 @@ class ListingService:
             "seller_id": str(listing.seller_id),
             "listing_number": listing.listing_number,
             "crop": listing.crop,
+            "variety": listing.variety,
             "quantity_kg": listing.quantity_kg,
             "harvest_status": listing.harvest_status,
             "grade": listing.grade,
@@ -243,11 +312,18 @@ class ListingService:
             "ask_price_per_q": listing.ask_price_per_q,
             "floor_price_at_publish": listing.floor_price_at_publish,
             "modal_price_at_publish": listing.modal_price_at_publish,
+            "payment_terms": listing.payment_terms,
+            "negotiable": listing.negotiable,
+            "price_validity_days": listing.price_validity_days,
             "transport_type": listing.transport_type,
             "pickup_window": listing.pickup_window,
+            "pickup_date": str(listing.pickup_date) if listing.pickup_date else None,
+            "pickup_address": listing.pickup_address,
             "status": listing.status,
             "price_edit_count": listing.price_edit_count,
             "expires_at": str(listing.expires_at),
+            "sold_at": str(listing.sold_at) if listing.sold_at else None,
+            "cancelled_at": str(listing.cancelled_at) if listing.cancelled_at else None,
             "views_count": listing.views_count,
             "enquiries_count": listing.enquiries_count,
             "created_at": str(listing.created_at) if listing.created_at else None,

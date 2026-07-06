@@ -43,6 +43,7 @@ class Step2Data(BaseModel):
         None,
         description="List of uploaded photo URLs (minimum 3 for completion)",
     )
+    variety: Optional[str] = Field(None, description="Crop variety, e.g. 'Sona Masuri'")
     grade: Optional[str] = Field(None, description="Quality grade: A, B, or C")
     grading_status: Optional[str] = Field(
         None,
@@ -52,6 +53,8 @@ class Step2Data(BaseModel):
         None,
         description="AI grading confidence 0-100",
     )
+    moisture_pct: Optional[float] = Field(None, description="Moisture percentage")
+    foreign_matter_pct: Optional[float] = Field(None, description="Foreign matter percentage")
 
 
 class Step3Data(BaseModel):
@@ -63,6 +66,20 @@ class Step3Data(BaseModel):
         ...,
         gt=0,
         description="Asking price per quintal in INR",
+    )
+    payment_terms: Optional[str] = Field(
+        None,
+        description="Payment terms: advance, on_delivery, credit_7, credit_15, credit_30",
+    )
+    negotiable: Optional[bool] = Field(
+        None,
+        description="Whether the price is negotiable",
+    )
+    price_validity_days: Optional[int] = Field(
+        None,
+        ge=1,
+        le=30,
+        description="Number of days the price is valid (1-30)",
     )
     floor_price_snapshot: Optional[float] = Field(
         None,

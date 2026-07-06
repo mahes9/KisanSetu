@@ -14,7 +14,7 @@ class ListingConfig:
     MIN_QTY_KG: int = 100
     MAX_QTY_KG: int = 25000
     MAX_ACTIVE_LISTINGS: int = 5
-    MAX_DRAFTS_PER_SELLER: int = 3
+    MAX_DRAFTS_PER_SELLER: int = 10
     LISTING_DURATION_DAYS: int = 7
     MAX_PRICE_EDITS: int = 3
 
@@ -46,7 +46,7 @@ class AIConfig:
 class DraftConfig:
     """Draft lifecycle parameters."""
 
-    MAX_DRAFTS: int = 3
+    MAX_DRAFTS: int = 10
     STALENESS_MINUTES: int = 30
     WARN_INACTIVE_DAYS: int = 7
     ABANDON_INACTIVE_DAYS: int = 14

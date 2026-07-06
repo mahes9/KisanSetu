@@ -149,7 +149,7 @@ class DraftRepository:
         stmt = (
             select(ListingDraft)
             .where(ListingDraft.seller_id == seller_id)
-            .where(ListingDraft.draft_status != "abandoned")
+            .where(ListingDraft.draft_status.notin_(["abandoned", "published"]))
             .order_by(ListingDraft.last_active_at.desc())
         )
         if status_filter is not None:
@@ -165,7 +165,7 @@ class DraftRepository:
             select(func.count())
             .select_from(ListingDraft)
             .where(ListingDraft.seller_id == seller_id)
-            .where(ListingDraft.draft_status != "abandoned")
+            .where(ListingDraft.draft_status.notin_(["abandoned", "published"]))
         )
         result = await self._session.execute(stmt)
         return result.scalar_one()

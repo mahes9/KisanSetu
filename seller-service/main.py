@@ -18,6 +18,8 @@ from app.api.v1.draft_router import router as draft_router
 from app.api.v1.listing_router import router as listing_router
 from app.api.v1.photo_router import router as photo_router
 from app.api.v1.analytics_router import router as analytics_router
+from app.api.v1.enquiry_router import router as enquiry_router
+from app.api.v1.order_router import router as order_router
 
 
 @asynccontextmanager
@@ -67,6 +69,8 @@ app.include_router(draft_router, prefix="/api/v1")
 app.include_router(listing_router, prefix="/api/v1")
 app.include_router(photo_router, prefix="/api/v1")
 app.include_router(analytics_router, prefix="/api/v1")
+app.include_router(enquiry_router, prefix="/api/v1")
+app.include_router(order_router, prefix="/api/v1")
 
 
 if __name__ == "__main__":
