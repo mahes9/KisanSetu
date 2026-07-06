@@ -1,0 +1,94 @@
+# ── Capital & risk ────────────────────────────────────────────────
+capital: 1000000              # trading capital in INR (₹10L default; set yours)
+risk:
+  positional_pct: 1.0         # % capital risked per S2 trade
+  swing_pct: 0.75             # % capital risked per S1/S4 trade
+  s3_factor: 0.5              # S3 / C-grade / AMBER multiplier
+  max_positions: 8
+  max_per_sector: 2
+  max_heat_pct: 4.0           # total open risk cap
+  max_notional_pct: 20.0      # single cash position notional cap
+  max_futures_notional_pct: 25.0
+  max_futures_positions: 2
+  futures_lot_risk_cap_pct: 1.25
+  stop_cap_positional_pct: 8.0   # skip trade if structural stop farther than this
+  stop_cap_swing_pct: 5.0
+  stop_cap_s3_pct: 6.0
+  stop_cap_s4_pct: 6.0
+
+# ── Structure engine ─────────────────────────────────────────────
+structure:
+  pivot_span_daily: 3         # bars each side for a pivot
+  pivot_span_weekly: 2
+  base_min_sessions: 15
+  base_max_range_pct: 12.0
+  tight_base_range_pct: 8.0
+  base_max_dist_52wh_pct: 15.0
+  breakout_vol_mult: 1.5      # vs 20d avg volume
+  breakout_close_top_frac: 0.333  # close in top third of range
+  gap_chase_limit_pct: 2.0    # >2% gap-up = retest entry only
+  retest_window_sessions: 5
+  retest_proximity_pct: 2.0
+  pullback_vol_dry_mult: 0.8  # pullback avg vol < 0.8x rally avg vol
+  reclaim_window_sessions: 3
+  s4_min_gain_pct: 3.0
+  s4_vol_mult: 2.5
+  uptrend_min_sequences: 2    # completed HH/HL pairs for S2 context
+
+# ── Layer filters ─────────────────────────────────────────────────
+filters:
+  min_turnover_cr: 10.0       # 20d avg daily turnover, ₹ crore
+  max_dist_52wh_reject_pct: 25.0
+  top_sectors: 6            # NSE 'basic industry' buckets are finer than sectoral indices
+  entry_gap_skip_pct: 2.0   # skip entry if next open gaps above trigger close by more
+  fundamentals:
+    revenue_growth_min: 12.0
+    pat_growth_min: 15.0
+    roe_min: 15.0
+    de_max: 1.0
+
+# ── Regime ────────────────────────────────────────────────────────
+regime:
+  breadth_green_pct: 50.0     # % of focus list in uptrend structure
+  vix_amber: 24.0
+  vix_red: 28.0
+
+# ── Exits ─────────────────────────────────────────────────────────
+exits:
+  s1_scale_r: 1.5
+  s2_scale_r: 2.0
+  scale_fraction: 0.0         # VALIDATED: 0 = ride full position on the structural
+                              # trail. Scaling 50% at +2R amputated the right tail
+                              # that a 38%-win positive-R system depends on
+                              # (S2 profit ~doubled, PF 1.28->1.9 across both windows).
+  s1_time_stop_days: 10
+  s4_time_stop_days: 15
+  s2_review_days: 30          # trading sessions (~6 weeks)
+  s2_review_min_r: 1.0
+  trend_state_exit: true      # exit on trend_state DOWN; tested 'false' — helped one
+                              # window, hurt the other, so NOT adopted (kept robust)
+  trail_buffer_pct: 0.5       # trail stop this far below the higher-low pivot
+  pyramid: false              # add to S2 winners at new higher-lows
+  pyramid_max_adds: 2
+  pyramid_add_fraction: 0.5   # each add = this × initial risk
+
+# ── Entry refinements ─────────────────────────────────────────────
+entries:
+  s1_retest_only: false       # tested — HURT (breakout-day S1s were the better ones)
+  s4_require_uptrend: true     # VALIDATED: only take S4 when daily structure is UP.
+                              # Cut S4 noise trades 95->48, win 46%->56%, DD -11%->-8%.
+  disabled_setups: ["S1"]     # VALIDATED OFF: S1 breakouts lose on pure price structure
+                              # in every test. They need the live delivery%/OI/grade
+                              # confirmation the backtest can't see. Remove "S1" here
+                              # once you are consistently applying that confirmation.
+
+# ── Backtest ──────────────────────────────────────────────────────
+backtest:
+  start: "2018-01-01"
+  cost_roundtrip_pct: 0.15
+  slippage_per_side_pct: 0.05
+
+# ── Data ──────────────────────────────────────────────────────────
+data:
+  cache_dir: "data"
+  ohlcv_lookback_days: 3000

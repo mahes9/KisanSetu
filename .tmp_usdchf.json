@@ -1,0 +1,918 @@
+{
+  "15": {
+    "tf": "15",
+    "quote": {
+      "symbol": "FX:USDCHF",
+      "open": 0.80963,
+      "high": 0.80963,
+      "low": 0.8095,
+      "close": 0.80957,
+      "last": 0.80957
+    },
+    "boxes": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "zones": [
+          {
+            "high": 0.81064,
+            "low": 0.8104805,
+            "type": "premium_zone"
+          },
+          {
+            "high": 0.81,
+            "low": 0.80971,
+            "type": "bearish_ob"
+          },
+          {
+            "high": 0.80957,
+            "low": 0.809455,
+            "type": "bullish_fvg"
+          },
+          {
+            "high": 0.809455,
+            "low": 0.80934,
+            "type": "bullish_fvg"
+          },
+          {
+            "high": 0.80912475,
+            "low": 0.80896525,
+            "type": "equilibrium_zone"
+          },
+          {
+            "high": 0.8076095,
+            "low": 0.80745,
+            "type": "discount_zone"
+          },
+          {
+            "high": 0.8076,
+            "low": 0.80703,
+            "type": "bullish_ob"
+          },
+          {
+            "high": 0.8058,
+            "low": 0.80537,
+            "type": "bullish_swing_ob"
+          },
+          {
+            "high": 0.80469,
+            "low": 0.80437,
+            "type": "bullish_ob"
+          },
+          {
+            "high": 0.79892,
+            "low": 0.79837,
+            "type": "bullish_ob"
+          },
+          {
+            "high": 0.79849,
+            "low": 0.79821,
+            "type": "bullish_swing_ob"
+          },
+          {
+            "high": 0.79303,
+            "low": 0.7924,
+            "type": "bullish_ob"
+          },
+          {
+            "high": 0.79141,
+            "low": 0.79098,
+            "type": "bullish_swing_ob"
+          },
+          {
+            "high": 0.78764,
+            "low": 0.78717,
+            "type": "bullish_swing_ob"
+          },
+          {
+            "high": 0.78522,
+            "low": 0.78441,
+            "type": "bullish_swing_ob"
+          }
+        ]
+      }
+    ],
+    "labels": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "labels": [
+          {
+            "text": "Weak High",
+            "price": 0.81064
+          },
+          {
+            "text": "Strong Low",
+            "price": 0.80745
+          },
+          {
+            "text": "Premium",
+            "price": 0.81064
+          },
+          {
+            "text": "Equilibrium",
+            "price": 0.809045
+          },
+          {
+            "text": "Discount",
+            "price": 0.80745
+          },
+          {
+            "text": "BOS",
+            "price": 0.7921
+          },
+          {
+            "text": "EQL",
+            "price": 0.8088
+          },
+          {
+            "text": "LH",
+            "price": 0.80953
+          },
+          {
+            "text": "BOS",
+            "price": 0.80953
+          },
+          {
+            "text": "HL",
+            "price": 0.80761
+          },
+          {
+            "text": "BOS",
+            "price": 0.81047
+          },
+          {
+            "text": "EQH",
+            "price": 0.81064
+          },
+          {
+            "text": "CHoCH",
+            "price": 0.80951
+          },
+          {
+            "text": "PDH",
+            "price": 0.81065
+          },
+          {
+            "text": "PDL",
+            "price": 0.80745
+          },
+          {
+            "text": "PWH",
+            "price": 0.80917
+          },
+          {
+            "text": "PWL",
+            "price": 0.79098
+          },
+          {
+            "text": "PMH",
+            "price": 0.79067
+          },
+          {
+            "text": "PML",
+            "price": 0.77558
+          }
+        ]
+      }
+    ],
+    "lines": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "levels": [
+          0.81065,
+          0.81064,
+          0.81047,
+          0.80953,
+          0.80951,
+          0.80917,
+          0.80745,
+          0.7921,
+          0.79098,
+          0.79067,
+          0.77558
+        ]
+      }
+    ]
+  },
+  "60": {
+    "tf": "60",
+    "quote": {
+      "symbol": "FX:USDCHF",
+      "open": 0.80913,
+      "high": 0.80986,
+      "low": 0.80913,
+      "close": 0.80956,
+      "last": 0.80956
+    },
+    "boxes": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "zones": [
+          {
+            "high": 0.81064,
+            "low": 0.809657,
+            "type": "premium_zone"
+          },
+          {
+            "high": 0.80966,
+            "low": 0.80745,
+            "type": "bullish_ob"
+          },
+          {
+            "high": 0.80702,
+            "low": 0.80628,
+            "type": "bullish_ob"
+          },
+          {
+            "high": 0.80499,
+            "low": 0.80384,
+            "type": "bullish_ob"
+          },
+          {
+            "high": 0.8013015,
+            "low": 0.8003185,
+            "type": "equilibrium_zone"
+          },
+          {
+            "high": 0.791963,
+            "low": 0.79098,
+            "type": "discount_zone"
+          },
+          {
+            "high": 0.7919,
+            "low": 0.79098,
+            "type": "bullish_swing_ob"
+          },
+          {
+            "high": 0.7811,
+            "low": 0.77996,
+            "type": "bullish_swing_ob"
+          },
+          {
+            "high": 0.77777,
+            "low": 0.77682,
+            "type": "bullish_ob"
+          },
+          {
+            "high": 0.77701,
+            "low": 0.77558,
+            "type": "bullish_swing_ob"
+          },
+          {
+            "high": 0.77628,
+            "low": 0.77479,
+            "type": "bullish_swing_ob"
+          },
+          {
+            "high": 0.76802,
+            "low": 0.7668,
+            "type": "bullish_swing_ob"
+          }
+        ]
+      }
+    ],
+    "labels": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "labels": [
+          {
+            "text": "Weak High",
+            "price": 0.81064
+          },
+          {
+            "text": "Strong Low",
+            "price": 0.79098
+          },
+          {
+            "text": "Premium",
+            "price": 0.81064
+          },
+          {
+            "text": "Equilibrium",
+            "price": 0.80081
+          },
+          {
+            "text": "Discount",
+            "price": 0.79098
+          },
+          {
+            "text": "CHoCH",
+            "price": 0.78077
+          },
+          {
+            "text": "HH",
+            "price": 0.80129
+          },
+          {
+            "text": "BOS",
+            "price": 0.79212
+          },
+          {
+            "text": "BOS",
+            "price": 0.80129
+          },
+          {
+            "text": "HL",
+            "price": 0.79098
+          },
+          {
+            "text": "BOS",
+            "price": 0.80953
+          },
+          {
+            "text": "EQL",
+            "price": 0.80745
+          },
+          {
+            "text": "EQH",
+            "price": 0.81064
+          },
+          {
+            "text": "PDH",
+            "price": 0.81065
+          },
+          {
+            "text": "PDL",
+            "price": 0.80745
+          },
+          {
+            "text": "PWH",
+            "price": 0.80917
+          },
+          {
+            "text": "PWL",
+            "price": 0.79098
+          },
+          {
+            "text": "PMH",
+            "price": 0.79067
+          },
+          {
+            "text": "PML",
+            "price": 0.77558
+          }
+        ]
+      }
+    ],
+    "lines": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "levels": [
+          0.81065,
+          0.81064,
+          0.80953,
+          0.80917,
+          0.80745,
+          0.80129,
+          0.79212,
+          0.79098,
+          0.79067,
+          0.78077,
+          0.77558
+        ]
+      }
+    ]
+  },
+  "240": {
+    "tf": "240",
+    "quote": {
+      "symbol": "FX:USDCHF",
+      "open": 0.8096099999999999,
+      "high": 0.80986,
+      "low": 0.80889,
+      "close": 0.80956,
+      "last": 0.80956
+    },
+    "boxes": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "zones": [
+          {
+            "high": 0.88545,
+            "low": 0.88398,
+            "type": "bearish_swing_ob"
+          },
+          {
+            "high": 0.84755,
+            "low": 0.84459,
+            "type": "bearish_swing_ob"
+          },
+          {
+            "high": 0.8132,
+            "low": 0.81093,
+            "type": "bearish_swing_ob"
+          },
+          {
+            "high": 0.81064,
+            "low": 0.8090835,
+            "type": "premium_zone"
+          },
+          {
+            "high": 0.79585325,
+            "low": 0.79429675,
+            "type": "equilibrium_zone"
+          },
+          {
+            "high": 0.79243,
+            "low": 0.79098,
+            "type": "bullish_ob"
+          },
+          {
+            "high": 0.78282,
+            "low": 0.77951,
+            "type": "bullish_swing_ob"
+          },
+          {
+            "high": 0.7810665,
+            "low": 0.77951,
+            "type": "discount_zone"
+          },
+          {
+            "high": 0.77729,
+            "low": 0.77558,
+            "type": "bullish_ob"
+          },
+          {
+            "high": 0.77662,
+            "low": 0.77479,
+            "type": "bullish_ob"
+          },
+          {
+            "high": 0.76998,
+            "low": 0.7668,
+            "type": "bullish_ob"
+          },
+          {
+            "high": 0.76794,
+            "low": 0.76287,
+            "type": "bullish_swing_ob"
+          }
+        ]
+      }
+    ],
+    "labels": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "labels": [
+          {
+            "text": "Weak High",
+            "price": 0.81064
+          },
+          {
+            "text": "Strong Low",
+            "price": 0.77951
+          },
+          {
+            "text": "Premium",
+            "price": 0.81064
+          },
+          {
+            "text": "Equilibrium",
+            "price": 0.795075
+          },
+          {
+            "text": "Discount",
+            "price": 0.77951
+          },
+          {
+            "text": "CHoCH",
+            "price": 0.7775
+          },
+          {
+            "text": "LH",
+            "price": 0.79067
+          },
+          {
+            "text": "CHoCH",
+            "price": 0.79067
+          },
+          {
+            "text": "EQL",
+            "price": 0.79483
+          },
+          {
+            "text": "HL",
+            "price": 0.77951
+          },
+          {
+            "text": "BOS",
+            "price": 0.7921
+          },
+          {
+            "text": "CHoCH",
+            "price": 0.79597
+          },
+          {
+            "text": "EQH",
+            "price": 0.80973
+          },
+          {
+            "text": "PDH",
+            "price": 0.80973
+          },
+          {
+            "text": "PDL",
+            "price": 0.80684
+          },
+          {
+            "text": "PWH",
+            "price": 0.80917
+          },
+          {
+            "text": "PWL",
+            "price": 0.79098
+          },
+          {
+            "text": "PMH",
+            "price": 0.79067
+          },
+          {
+            "text": "PML",
+            "price": 0.77558
+          }
+        ]
+      }
+    ],
+    "lines": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "levels": [
+          0.81064,
+          0.80973,
+          0.80917,
+          0.80684,
+          0.79597,
+          0.7921,
+          0.79098,
+          0.79067,
+          0.77951,
+          0.7775,
+          0.77558
+        ]
+      }
+    ]
+  },
+  "W": {
+    "tf": "W",
+    "quote": {
+      "symbol": "FX:USDCHF",
+      "open": 0.80712,
+      "high": 0.81064,
+      "low": 0.80685,
+      "close": 0.80957,
+      "last": 0.80957
+    },
+    "boxes": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "zones": [
+          {
+            "high": 1.22973,
+            "low": 1.1888,
+            "type": "bearish_swing_ob"
+          },
+          {
+            "high": 1.03436,
+            "low": 1.00834,
+            "type": "bearish_swing_ob"
+          },
+          {
+            "high": 1.02369,
+            "low": 1.01326,
+            "type": "bearish_swing_ob"
+          },
+          {
+            "high": 1.01478,
+            "low": 0.99185,
+            "type": "bearish_swing_ob"
+          },
+          {
+            "high": 0.94401,
+            "low": 0.93412,
+            "type": "bearish_ob"
+          },
+          {
+            "high": 0.9245,
+            "low": 0.9073,
+            "type": "bearish_ob"
+          },
+          {
+            "high": 0.92242,
+            "low": 0.90055,
+            "type": "bearish_swing_ob"
+          },
+          {
+            "high": 0.92242,
+            "low": 0.9143055,
+            "type": "premium_zone"
+          },
+          {
+            "high": 0.92003,
+            "low": 0.90775,
+            "type": "bearish_ob"
+          },
+          {
+            "high": 0.84755,
+            "low": 0.8323,
+            "type": "bearish_ob"
+          },
+          {
+            "high": 0.84533225,
+            "low": 0.83721775,
+            "type": "equilibrium_zone"
+          },
+          {
+            "high": 0.7682445,
+            "low": 0.76013,
+            "type": "discount_zone"
+          }
+        ]
+      }
+    ],
+    "labels": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "labels": [
+          {
+            "text": "Strong High",
+            "price": 0.92242
+          },
+          {
+            "text": "Weak Low",
+            "price": 0.76013
+          },
+          {
+            "text": "Premium",
+            "price": 0.92242
+          },
+          {
+            "text": "Equilibrium",
+            "price": 0.841275
+          },
+          {
+            "text": "Discount",
+            "price": 0.76013
+          },
+          {
+            "text": "CHoCH",
+            "price": 0.94726
+          },
+          {
+            "text": "CHoCH",
+            "price": 0.91475
+          },
+          {
+            "text": "LL",
+            "price": 0.83321
+          },
+          {
+            "text": "BOS",
+            "price": 0.83321
+          },
+          {
+            "text": "LH",
+            "price": 0.92242
+          },
+          {
+            "text": "BOS",
+            "price": 0.78778
+          },
+          {
+            "text": "EQH",
+            "price": 0.80408
+          },
+          {
+            "text": "EQL",
+            "price": 0.76287
+          },
+          {
+            "text": "PWH",
+            "price": 0.80917
+          },
+          {
+            "text": "PWL",
+            "price": 0.79098
+          },
+          {
+            "text": "PMH",
+            "price": 0.79067
+          },
+          {
+            "text": "PML",
+            "price": 0.77558
+          }
+        ]
+      }
+    ],
+    "lines": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "levels": [
+          0.94726,
+          0.92242,
+          0.91475,
+          0.83321,
+          0.80917,
+          0.79098,
+          0.79067,
+          0.78778,
+          0.77558,
+          0.76013
+        ]
+      }
+    ]
+  },
+  "D": {
+    "tf": "D",
+    "quote": {
+      "symbol": "FX:USDCHF",
+      "open": 0.8096099999999999,
+      "high": 0.80986,
+      "low": 0.80889,
+      "close": 0.80957,
+      "last": 0.80957
+    },
+    "boxes": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "zones": [
+          {
+            "high": 0.9245,
+            "low": 0.91734,
+            "type": "bearish_swing_ob"
+          },
+          {
+            "high": 0.92003,
+            "low": 0.91516,
+            "type": "bearish_swing_ob"
+          },
+          {
+            "high": 0.88545,
+            "low": 0.87735,
+            "type": "bearish_ob"
+          },
+          {
+            "high": 0.84755,
+            "low": 0.83299,
+            "type": "bearish_ob"
+          },
+          {
+            "high": 0.82497,
+            "low": 0.81695,
+            "type": "bearish_ob"
+          },
+          {
+            "high": 0.82147,
+            "low": 0.8155,
+            "type": "bearish_ob"
+          },
+          {
+            "high": 0.81712,
+            "low": 0.80258,
+            "type": "bearish_swing_ob"
+          },
+          {
+            "high": 0.81242,
+            "low": 0.8079,
+            "type": "bearish_swing_ob"
+          },
+          {
+            "high": 0.81065,
+            "low": 0.808124,
+            "type": "premium_zone"
+          },
+          {
+            "high": 0.79817,
+            "low": 0.79707,
+            "type": "bullish_fvg"
+          },
+          {
+            "high": 0.79707,
+            "low": 0.79597,
+            "type": "bullish_fvg"
+          },
+          {
+            "high": 0.786653,
+            "low": 0.784127,
+            "type": "equilibrium_zone"
+          },
+          {
+            "high": 0.78092,
+            "low": 0.77558,
+            "type": "bullish_swing_ob"
+          },
+          {
+            "high": 0.77929,
+            "low": 0.77479,
+            "type": "bullish_ob"
+          },
+          {
+            "high": 0.762656,
+            "low": 0.76013,
+            "type": "discount_zone"
+          }
+        ]
+      }
+    ],
+    "labels": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "labels": [
+          {
+            "text": "Weak High",
+            "price": 0.81065
+          },
+          {
+            "text": "Strong Low",
+            "price": 0.76013
+          },
+          {
+            "text": "Premium",
+            "price": 0.81065
+          },
+          {
+            "text": "Equilibrium",
+            "price": 0.78539
+          },
+          {
+            "text": "Discount",
+            "price": 0.76013
+          },
+          {
+            "text": "BOS",
+            "price": 0.78287
+          },
+          {
+            "text": "BOS",
+            "price": 0.78785
+          },
+          {
+            "text": "LL",
+            "price": 0.76013
+          },
+          {
+            "text": "CHoCH",
+            "price": 0.7775
+          },
+          {
+            "text": "EQH",
+            "price": 0.78994
+          },
+          {
+            "text": "EQL",
+            "price": 0.77951
+          },
+          {
+            "text": "LH",
+            "price": 0.80424
+          },
+          {
+            "text": "CHoCH",
+            "price": 0.80424
+          },
+          {
+            "text": "PDH",
+            "price": 0.81065
+          },
+          {
+            "text": "PDL",
+            "price": 0.80745
+          },
+          {
+            "text": "PWH",
+            "price": 0.80917
+          },
+          {
+            "text": "PWL",
+            "price": 0.79098
+          },
+          {
+            "text": "PMH",
+            "price": 0.79067
+          },
+          {
+            "text": "PML",
+            "price": 0.77558
+          }
+        ]
+      }
+    ],
+    "lines": [
+      {
+        "study": "Smart Money Concepts [LuxAlgo]",
+        "levels": [
+          0.81065,
+          0.80917,
+          0.80745,
+          0.80424,
+          0.79098,
+          0.79067,
+          0.78785,
+          0.78287,
+          0.7775,
+          0.77558,
+          0.76013
+        ]
+      }
+    ]
+  }
+}
